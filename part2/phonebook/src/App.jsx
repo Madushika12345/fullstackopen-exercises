@@ -1,0 +1,108 @@
+
+import { useState } from 'react'
+const Filter = ({ newFilter, setNewFilter }) => {
+  return (
+    <div>
+      filter shown with: <input
+        value={newFilter}
+        onChange={(event) => setNewFilter(event.target.value)}
+      />
+    </div>
+  )
+}
+const PersonForm = ({
+  addPerson,
+  newName,
+  setNewName,
+  newNumber,
+  setNewNumber
+}) => {
+  return (
+    <form onSubmit={addPerson}>
+      <div>
+        name: <input
+          value={newName}
+          onChange={(event) => setNewName(event.target.value)}
+        />
+      </div>
+
+      <div>
+        number: <input
+          value={newNumber}
+          onChange={(event) => setNewNumber(event.target.value)}
+        />
+      </div>
+
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+const Persons = ({ personsToShow }) => {
+  return (
+    <div>
+      {personsToShow.map(person => (
+        <p key={person.id}>
+          {person.name}: {person.number}
+        </p>
+      ))}
+    </div>
+  )
+}
+const App = () => {
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', id: 1 }
+  ])
+
+const [newName, setNewName] = useState('')
+const [newNumber, setNewNumber] = useState('')
+const [newFilter, setNewFilter] = useState('')
+
+const addPerson = (event) => {
+  event.preventDefault()
+
+  const nameExists = persons.some(
+    person => person.name === newName
+  )
+
+  if (nameExists) {
+    alert(`${newName} is already added to phonebook`)
+    return
+  }
+
+  const personObject = {
+    name: newName,
+    number: newNumber,
+    id: Date.now()
+  }
+
+  setPersons(persons.concat(personObject))
+  setNewName('')
+  setNewNumber('')
+}
+const personsToShow = persons.filter(person =>
+  person.name.toLowerCase().includes(newFilter.toLowerCase())
+)
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <Filter newFilter={newFilter} setNewFilter={setNewFilter} />
+      
+      <PersonForm
+        addPerson={addPerson}
+        newName={newName}
+        setNewName={setNewName}
+        newNumber={newNumber}
+        setNewNumber={setNewNumber}
+      />
+
+      <h2>Numbers</h2>
+      <Persons personsToShow={personsToShow} />
+      
+    </div>
+  )
+}
+
+export default App
