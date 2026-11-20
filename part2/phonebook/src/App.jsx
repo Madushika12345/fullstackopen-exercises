@@ -79,13 +79,16 @@ const addPerson = (event) => {
 
   const personObject = {
     name: newName,
-    number: newNumber,
-    id: Date.now()
+    number: newNumber
   }
 
-  setPersons(persons.concat(personObject))
-  setNewName('')
-  setNewNumber('')
+  axios
+    .post('http://localhost:3001/persons', personObject)
+    .then(response => {
+      setPersons(persons.concat(response.data))
+      setNewName('')
+      setNewNumber('')
+    })
 }
 const personsToShow = persons.filter(person =>
   person.name.toLowerCase().includes(newFilter.toLowerCase())

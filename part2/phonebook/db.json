@@ -19,6 +19,12 @@
       "name": "Sameera",
       "number": "0403216745",
       "id": "4"
+    },
+    {
+      "name": "Test Person",
+      "number": "0408888333",
+      "id": "rHGV25DKzpc"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
