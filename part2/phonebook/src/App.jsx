@@ -71,12 +71,31 @@ useEffect(() => {
 const addPerson = (event) => {
   event.preventDefault()
 
-  const nameExists = persons.some(
+  const existingPerson = persons.find(
     person => person.name === newName
   )
 
-  if (nameExists) {
-    alert(`${newName} is already added to phonebook`)
+  if (existingPerson) {
+    if (window.confirm(
+      `${newName} is already added to phonebook, replace the old number with a new one?`
+    )) {
+      const changedPerson = {
+        ...existingPerson,
+        number: newNumber
+      }
+
+      personService
+        .update(existingPerson.id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person =>
+            person.id !== existingPerson.id
+              ? person
+              : returnedPerson
+          ))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
     return
   }
 
