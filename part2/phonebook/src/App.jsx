@@ -55,13 +55,13 @@ const Persons = ({ personsToShow, deletePerson }) => {
     </div>
   )
 }
-const Notification = ({ message }) => {
+const Notification = ({ message, type = 'success' }) => {
   if (message === null) {
     return null
   }
 
   return (
-    <div className="success">
+    <div className={type}>
       {message}
     </div>
   )
@@ -73,6 +73,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   useEffect(() => {
     personService
       .getAll()
@@ -105,6 +106,7 @@ const addPerson = (event) => {
               ? person
               : returnedPerson
           ))
+
           setNewName('')
           setNewNumber('')
 
@@ -112,6 +114,23 @@ const addPerson = (event) => {
 
           setTimeout(() => {
             setSuccessMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          if (error.response?.status === 404) {
+            setErrorMessage(
+              `Information of ${existingPerson.name} has already been removed from server`
+            )
+
+            setPersons(persons.filter(
+              person => person.id !== existingPerson.id
+            ))
+          } else {
+            setErrorMessage('Failed to update contact')
+          }
+
+          setTimeout(() => {
+            setErrorMessage(null)
           }, 5000)
         })
     }
@@ -127,6 +146,7 @@ const addPerson = (event) => {
     .create(personObject)
     .then(returnedPerson => {
       setPersons(persons.concat(returnedPerson))
+
       setNewName('')
       setNewNumber('')
 
@@ -155,9 +175,8 @@ const personsToShow = persons.filter(person =>
   return (
     <div>
       <h2>Phonebook</h2>
-
-      <Notification message={successMessage} />
-
+      <Notification message={successMessage} type="success" />
+      <Notification message={errorMessage} type="error" />
       <Filter newFilter={newFilter} setNewFilter={setNewFilter} />
       
       <PersonForm
