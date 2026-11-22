@@ -24,6 +24,11 @@
       "name": "Test Person",
       "number": "0401239999",
       "id": "rHGV25DKzpc"
+    },
+    {
+      "name": "Notification Test",
+      "number": "0401235555",
+      "id": "TdxFpZO6Zo0"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

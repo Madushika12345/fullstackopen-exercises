@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
 const Filter = ({ newFilter, setNewFilter }) => {
   return (
     <div>
@@ -54,19 +55,31 @@ const Persons = ({ personsToShow, deletePerson }) => {
     </div>
   )
 }
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="success">
+      {message}
+    </div>
+  )
+}
 const App = () => {
   const [persons, setPersons] = useState([])
 
-const [newName, setNewName] = useState('')
-const [newNumber, setNewNumber] = useState('')
-const [newFilter, setNewFilter] = useState('')
-useEffect(() => {
-  personService
-    .getAll()
-    .then(initialPersons => {
-      setPersons(initialPersons)
-    })
-}, [])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [newFilter, setNewFilter] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+  }, [])
 
 const addPerson = (event) => {
   event.preventDefault()
@@ -94,6 +107,12 @@ const addPerson = (event) => {
           ))
           setNewName('')
           setNewNumber('')
+
+          setSuccessMessage(`Updated ${returnedPerson.name}`)
+
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
     }
     return
@@ -110,6 +129,12 @@ const addPerson = (event) => {
       setPersons(persons.concat(returnedPerson))
       setNewName('')
       setNewNumber('')
+
+      setSuccessMessage(`Added ${returnedPerson.name}`)
+
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
     })
 }
 const deletePerson = (id) => {
@@ -130,6 +155,9 @@ const personsToShow = persons.filter(person =>
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification message={successMessage} />
+
       <Filter newFilter={newFilter} setNewFilter={setNewFilter} />
       
       <PersonForm
