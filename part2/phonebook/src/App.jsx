@@ -40,12 +40,15 @@ const PersonForm = ({
     </form>
   )
 }
-const Persons = ({ personsToShow }) => {
+const Persons = ({ personsToShow, deletePerson }) => {
   return (
     <div>
       {personsToShow.map(person => (
         <p key={person.id}>
-          {person.name}: {person.number}
+          {person.name}: {person.number}{' '}
+          <button onClick={() => deletePerson(person.id)}>
+            delete
+          </button>
         </p>
       ))}
     </div>
@@ -90,6 +93,17 @@ const addPerson = (event) => {
       setNewNumber('')
     })
 }
+const deletePerson = (id) => {
+  const person = persons.find(p => p.id === id)
+
+  if (window.confirm(`Delete ${person.name}?`)) {
+    personService
+      .remove(id)
+      .then(() => {
+        setPersons(persons.filter(p => p.id !== id))
+      })
+  }
+}
 const personsToShow = persons.filter(person =>
   person.name.toLowerCase().includes(newFilter.toLowerCase())
 )
@@ -108,7 +122,10 @@ const personsToShow = persons.filter(person =>
       />
 
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons
+        personsToShow={personsToShow}
+        deletePerson={deletePerson}
+      />
       
     </div>
   )
