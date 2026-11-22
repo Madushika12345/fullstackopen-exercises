@@ -35,9 +35,15 @@ const App = () => {
         setCountries(response.data)
       })
   }, [])
-  const filteredCountries = countries.filter(country =>
-    country.name.common.toLowerCase().includes(search.toLowerCase())
+  const exactMatch = countries.find(country =>
+    country.name.common.toLowerCase() === search.toLowerCase()
   )
+
+  const filteredCountries = exactMatch
+    ? [exactMatch]
+    : countries.filter(country =>
+        country.name.common.toLowerCase().includes(search.toLowerCase())
+      )
 
   return (
     <div>
@@ -53,7 +59,10 @@ const App = () => {
       ) : (
         filteredCountries.map(country => (
           <p key={country.name.common}>
-            {country.name.common}
+            {country.name.common}{' '}
+            <button onClick={() => setSearch(country.name.common)}>
+              show
+            </button>
           </p>
         ))
       )}
